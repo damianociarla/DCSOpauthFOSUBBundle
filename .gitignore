@@ -14,3 +14,7 @@ app/config/parameters.yml
 
 # Composer
 composer.phar
+
+#PhpStorm
+.idea
+.idea/*

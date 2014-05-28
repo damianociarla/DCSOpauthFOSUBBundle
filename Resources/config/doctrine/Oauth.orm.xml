@@ -1,0 +1,15 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="DCS\OpauthFOSUBBundle\Entity\Oauth">
+
+        <field name="provider" column="provider" type="string" nullable="false" />
+
+        <field name="uid" column="uid" type="string" nullable="false" />
+
+        <field name="raw" column="raw" type="array" nullable="true" />
+
+    </mapped-superclass>
+
+</doctrine-mapping>
