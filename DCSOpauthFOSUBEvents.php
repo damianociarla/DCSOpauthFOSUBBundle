@@ -24,4 +24,11 @@ class DCSOpauthFOSUBEvents
      * The event listener method receives a DCS\OpauthFOSUBBundle\Event\UserEvent instance.
      */
     const SYNC_USER_SUCCESSFUL = 'dcs_opauth_fosub.event.sync_user_successful';
+
+    /**
+     * The NOT_FOUND_USER_BY_PROVIDER event occurs when the function 'findUserByUidProvider' returns a negative result
+     *
+     * The event listener method receives a DCS\OpauthFOSUBBundle\Event\OpauthResponseDataEvent instance.
+     */
+    const NOT_FOUND_USER_BY_PROVIDER = 'dcs_opauth_fosub.event.not_found_user_by_provider';
 }

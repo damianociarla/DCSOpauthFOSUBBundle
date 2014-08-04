@@ -5,6 +5,7 @@ namespace DCS\OpauthFOSUBBundle\Listener;
 use DCS\OpauthBundle\DCSOpauthEvents;
 use DCS\OpauthBundle\Event\OpauthResponseEvent;
 use DCS\OpauthFOSUBBundle\DCSOpauthFOSUBEvents;
+use DCS\OpauthFOSUBBundle\Event\OpauthResponseDataEvent;
 use DCS\OpauthFOSUBBundle\Event\SyncUserMismatchEvent;
 use DCS\OpauthFOSUBBundle\Event\UserEvent;
 use DCS\OpauthFOSUBBundle\Model\OauthManagerInterface;
@@ -113,7 +114,13 @@ class DCSOpauthListener implements EventSubscriberInterface
         } else {
             // If the User was not found by uid and provider, redirect the user on fos registration
             if (null === $user = $this->oauthManager->findUserByUidProvider($uid, $provider)) {
-                $event->setResponse(new RedirectResponse($this->router->generate('fos_user_registration_register')));
+                $opauthResponseDataEvent = new OpauthResponseDataEvent($responseData);
+                $this->eventDispatcher->dispatch(DCSOpauthFOSUBEvents::NOT_FOUND_USER_BY_PROVIDER, $opauthResponseDataEvent);
+                // if not set a new response, set the default response
+                if (null === $response = $opauthResponseDataEvent->getResponse()) {
+                    $response = new RedirectResponse($this->router->generate('fos_user_registration_register'));
+                }
+                $event->setResponse($response);
             } else {
                 // Execute the login and disable Opauth authentication
                 $this->doLogin($user, $event);
