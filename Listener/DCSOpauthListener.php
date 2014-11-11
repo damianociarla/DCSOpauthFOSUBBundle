@@ -19,6 +19,7 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
 
 class DCSOpauthListener implements EventSubscriberInterface
 {
@@ -48,6 +49,11 @@ class DCSOpauthListener implements EventSubscriberInterface
     protected $loginManager;
 
     /**
+     * @var UserCheckerInterface
+     */
+    protected $userChecker;
+
+    /**
      * @var string
      */
     protected $firewallName;
@@ -58,6 +64,7 @@ class DCSOpauthListener implements EventSubscriberInterface
         OauthManagerInterface $oauthManager,
         RouterInterface $router,
         LoginManagerInterface $loginManager,
+        UserCheckerInterface $userChecker,
         $firewallName
     ) {
         $this->security = $security;
@@ -65,6 +72,7 @@ class DCSOpauthListener implements EventSubscriberInterface
         $this->oauthManager = $oauthManager;
         $this->router = $router;
         $this->loginManager = $loginManager;
+        $this->userChecker = $userChecker;
         $this->firewallName = $firewallName;
     }
 
@@ -122,6 +130,8 @@ class DCSOpauthListener implements EventSubscriberInterface
                 }
                 $event->setResponse($response);
             } else {
+                // Checks if the user account is valid
+                $this->userChecker->checkPreAuth($user);
                 // Execute the login and disable Opauth authentication
                 $this->doLogin($user, $event);
                 $event->setAuthenticate(false);
