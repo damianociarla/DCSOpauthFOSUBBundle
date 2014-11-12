@@ -41,4 +41,20 @@ interface OauthManagerInterface
      * @return null|OauthInterface
      */
     public function findOauth($uid, $provider);
+
+    /**
+     * Find Oauth by User and provider
+     *
+     * @param UserInterface $user
+     * @param string $provider
+     * @return null|OauthInterface
+     */
+    public function findOauthByUserAndProvider(UserInterface $user, $provider);
+
+    /**
+     * Remove Oauth instance
+     *
+     * @param OauthInterface $oauth
+     */
+    public function removeOauth(OauthInterface $oauth);
 } 

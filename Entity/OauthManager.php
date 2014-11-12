@@ -50,6 +50,17 @@ class OauthManager extends BaseManager
     }
 
     /**
+     * Remove Oauth instance
+     *
+     * @param OauthInterface $oauth
+     */
+    public function removeOauth(OauthInterface $oauth)
+    {
+        $this->em->remove($oauth);
+        $this->em->flush();
+    }
+
+    /**
      * Create or update Oauth
      *
      * @param OauthInterface $oauth

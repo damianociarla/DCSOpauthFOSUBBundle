@@ -83,6 +83,21 @@ abstract class OauthManager implements OauthManagerInterface
     }
 
     /**
+     * Find Oauth by User and provider
+     *
+     * @param UserInterface $user
+     * @param string $provider
+     * @return null|OauthInterface
+     */
+    public function findOauthByUserAndProvider(UserInterface $user, $provider)
+    {
+        return $this->findOneBy(array(
+            'user' => $user,
+            'provider' => $provider,
+        ));
+    }
+
+    /**
      * Find Oauth by criteria
      *
      * @param array $criteria
