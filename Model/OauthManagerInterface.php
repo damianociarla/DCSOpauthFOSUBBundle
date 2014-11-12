@@ -24,4 +24,21 @@ interface OauthManagerInterface
      * @param array $raw
      */
     public function updateUser(UserInterface $user, $uid, $provider, array $raw = null);
+
+    /**
+     * Find Oauth config by User
+     *
+     * @param UserInterface $user
+     * @return array
+     */
+    public function findOauthConfigurationsByUser(UserInterface $user);
+
+    /**
+     * Find Oauth by uid and provider
+     *
+     * @param $uid
+     * @param $provider
+     * @return null|OauthInterface
+     */
+    public function findOauth($uid, $provider);
 } 

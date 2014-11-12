@@ -28,18 +28,25 @@ class OauthManager extends BaseManager
     }
 
     /**
-     * Find Oauth by uid and provider
+     * Find Oauth by criteria
      *
-     * @param $uid
-     * @param $provider
+     * @param array $criteria
      * @return null|OauthInterface
      */
-    protected function findOauth($uid, $provider)
+    protected function findOneBy(array $criteria)
     {
-        return $this->repository->findOneBy(array(
-            'provider' => $provider,
-            'uid' => $uid,
-        ));
+        return $this->repository->findOneBy($criteria);
+    }
+
+    /**
+     * Find Oauth configurations by criteria
+     *
+     * @param array $criteria
+     * @return array
+     */
+    protected function findBy(array $criteria)
+    {
+        return $this->repository->findBy($criteria);
     }
 
     /**
