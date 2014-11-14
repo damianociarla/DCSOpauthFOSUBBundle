@@ -14,6 +14,7 @@ use FOS\UserBundle\Security\LoginManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -54,6 +55,11 @@ class DCSOpauthListener implements EventSubscriberInterface
     protected $userChecker;
 
     /**
+     * @var SessionInterface
+     */
+    protected $session;
+
+    /**
      * @var string
      */
     protected $firewallName;
@@ -65,6 +71,7 @@ class DCSOpauthListener implements EventSubscriberInterface
         RouterInterface $router,
         LoginManagerInterface $loginManager,
         UserCheckerInterface $userChecker,
+        SessionInterface $session,
         $firewallName
     ) {
         $this->security = $security;
@@ -73,6 +80,7 @@ class DCSOpauthListener implements EventSubscriberInterface
         $this->router = $router;
         $this->loginManager = $loginManager;
         $this->userChecker = $userChecker;
+        $this->session = $session;
         $this->firewallName = $firewallName;
     }
 
@@ -130,8 +138,6 @@ class DCSOpauthListener implements EventSubscriberInterface
                 }
                 $event->setResponse($response);
             } else {
-                // Checks if the user account is valid
-                $this->userChecker->checkPreAuth($user);
                 // Execute the login and disable Opauth authentication
                 $this->doLogin($user, $event);
                 $event->setAuthenticate(false);
@@ -164,7 +170,13 @@ class DCSOpauthListener implements EventSubscriberInterface
     protected function doLogin(UserInterface $user, OpauthResponseEvent $event)
     {
         try {
+            $this->userChecker->checkPreAuth($user);
             $this->loginManager->loginUser($this->firewallName, $user);
-        } catch (AccountStatusException $e) { /* No action */ }
+        } catch (AccountStatusException $e) {
+            if (null !== $this->session && !$this->session->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
+                $this->session->set(SecurityContextInterface::AUTHENTICATION_ERROR, $e);
+            }
+            throw $e;
+        }
     }
-} 
+}

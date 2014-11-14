@@ -17,6 +17,7 @@
             <argument type="service" id="router" />
             <argument type="service" id="fos_user.security.login_manager" />
             <argument type="service" id="security.user_checker" />
+            <argument type="service" id="session" />
             <argument>%fos_user.firewall_name%</argument>
             <tag name="kernel.event_subscriber" />
         </service>
